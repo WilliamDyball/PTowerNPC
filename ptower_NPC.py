@@ -45,25 +45,40 @@ def connectServer(id, count):
         #line = stripcrlf(f.readline())
         #print "line =", line, " thus stopping"
 
+def setUpName(): #Bypasses the start screen and then sets the name of the bot to Bot
+    global sckt
+    print('\nSetting name to Bot. \n')
+    time.sleep(0.25)
+    sckt.send('\n')
+    time.sleep(0.25)
+    sckt.send('Bot')
+    sckt.send('\n')
+    print('Name has been set and should be in game.\n')
+        
 def step1():
     global sckt
     sckt.send('1')
+    print('Stepping forward 1')
 
 def setp2():
     global sckt
     sckt.send('2')
+    print('Stepping forward 2')
     
 def turnLeft():
     global sckt
     sckt.send('l')
+    print('Turning left')
 
 def turnRight():
     global sckt
     sckt.send('r')
+    print('Turn right')
 
 def attack():
     global sckt
     sckt.send('a')
+    print('Attacking')
 
 def initEventLoop():
     print "initEventLoop called"
@@ -71,21 +86,16 @@ def initEventLoop():
 
     thread.start_new(connectServer, (1,connectAttempts))
 
-    # Skips the start screen and sets the name to Bot.
-    time.sleep(1)
-    sckt.send('\n')
-    time.sleep(1)
-    sckt.send('Bot')
-    sckt.send('\n')
-
-    print "Should be in game"
+    setUpName()
+    
     while True:
-        time.sleep(2)
+        time.sleep(1)
         step1()
-        time.sleep(2)
+        time.sleep(1)
         turnLeft()
-        time.sleep(2)
+        time.sleep(1)
         turnRight()
+        time.sleep(1)
         attack()
 
 def initNPC():
