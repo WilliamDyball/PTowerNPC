@@ -44,7 +44,26 @@ def connectServer(id, count):
         # line = s.readline()
         #line = stripcrlf(f.readline())
         #print "line =", line, " thus stopping"
+
+def step1():
+    global sckt
+    sckt.send('1')
+
+def setp2():
+    global sckt
+    sckt.send('2')
     
+def turnLeft():
+    global sckt
+    sckt.send('l')
+
+def turnRight():
+    global sckt
+    sckt.send('r')
+
+def attack():
+    global sckt
+    sckt.send('a')
 
 def initEventLoop():
     print "initEventLoop called"
@@ -62,11 +81,12 @@ def initEventLoop():
     print "Should be in game"
     while True:
         time.sleep(2)
-        sckt.send('1')
+        step1()
         time.sleep(2)
-        sckt.send('l')
+        turnLeft()
         time.sleep(2)
-        sckt.send('r')
+        turnRight()
+        attack()
 
 def initNPC():
     print "initNPC called"
