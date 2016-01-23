@@ -75,11 +75,71 @@ def turnRight():
     sckt.send('r')
     print('Turn right')
 
+def vault():
+    global sckt
+    sckt.send('v')
+    print('Vaulting')
+    
 def attack():
     global sckt
     sckt.send('a')
     print('Attacking')
 
+def openDoor():
+    global sckt
+    sckt.send('o')
+    print('Opening door')
+
+def fireNArrow():
+    global sckt
+    sckt.send('f')
+    print('Firing a normal arrow')
+
+def fireMArrow():
+    global sckt
+    sckt.send('m')
+    print('Firing a magic arrow')
+
+def parry():
+    global sckt
+    sckt.send('p')
+    print('Parrying')
+
+def thrust():
+    global sckt
+    sckt.send('t')
+    print('Thrusting')
+
+def closeDoor():
+    global sckt
+    sckt.send('c')
+    print('Closing door')
+
+def examineDoor():
+    global sckt
+    sckt.send('e')
+    print('Examining door')
+
+def getTreasure():
+    global sckt
+    sckt.send('g')
+    print('Getting treasure')
+
+def dropTreasure():
+    global sckt
+    sckt.send('d')
+    print('Dropping treasure')
+
+def useTreasure():
+    global sckt
+    sckt.send('u')
+    print('Using treasure')
+
+def speak():
+    global sckt
+    sckt.send('s')
+    print('Speaking')
+    
 def initEventLoop():
     print "initEventLoop called"
     global sckt
