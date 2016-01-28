@@ -156,12 +156,12 @@ def initEventLoop():
         line = sckt.recv(1024)
 #        print "Processing line", line, "\n"
         processLine(line)
-        time.sleep(1)
+        time.sleep(0.1)
         print "Wounds: ", wounds
-        if wounds < 75:
+        if int(wounds) <= 75:  #Sets wounds to be an int to be evaluated
+            print "low health"
             vault()
             step2()
-            print "AAAAAHHHH!!!"
         step1()
 #        time.sleep(1)
 #        turnLeft()
