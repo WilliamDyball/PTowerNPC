@@ -16,6 +16,9 @@ connectAttempts = 10
 wounds          = 10
 fatigue         = 100
 cRoom           = 0
+magicArrows     = 0
+arrows          = 0
+weight          = 0
 
 
 def connectServer(id, count):
@@ -37,20 +40,59 @@ def setUpName(): #Bypasses the start screen and then sets the name of the bot to
     print 'Name has been set and should be in game.\n'
 
 
-def processLine(line):
+def getWounds(line):
     global wounds
     #
     #Searches the input line for "dW " and then searches the result for an integer and then the global wounds is set the value found
     #
     m = re.search("(dW .*)", line)
     if m:
-        print("search.....", m.group(1))
+        print "search.....", m.group(1)
         tempdW = m.group(1)
         tempdW1 = re.search(r"([0-9]+)", tempdW)
         wounds = tempdW1.group(1)
-        print "search......", wounds
-    
-    
+        print "search found ....", wounds
+
+def getRoom(line):
+    global cRoom
+    #
+    #Searches the input line for the room number and sets cRoom to the current room.
+    #
+    m = re.search("(dR .*)", line)
+    if m:
+        print "search.....", m.group(1)
+        tempdR = m.group(1)
+        tempdR1 = re.search(r"([0-9]+)", tempdR)
+        cRoom = tempdR1.group(1)
+        print "search found ....", cRoom
+
+def getMArrows(line):
+    global magicArrows
+
+    m = re.search("(dM .*)", line)
+    if m:
+        print "search.....", m.group(1)
+        tempdM = m.group(1)
+        tempdM1 = re.search(r"([0-9]+)", tempdM)
+        magicArrows = tempdM1.group(1)
+        print "search found ....", magicArrows
+
+def getArrows(line):
+    global arrows
+
+    m = re.search("(dA .*)", line)
+    if m:
+        print "search.....", m.group(1)
+        tempdA = m.group(1)
+        tempdA1 = re.search(r"([0-9]+)", tempdA)
+        arrows = tempdA1.group(1)
+        print "search found ....", arrows
+        
+def processLine(line):
+    getWounds(line)
+    getRoom(line)
+    getMArrows(line)
+    getArrows(line)    
     
 def step1():
     global sckt
@@ -154,7 +196,7 @@ def initEventLoop():
     
     while True:
         line = sckt.recv(1024)
-#        print "Processing line", line, "\n"
+        print "Processing line", line, "\n"
         processLine(line)
         time.sleep(0.1)
         print "Wounds: ", wounds
@@ -163,7 +205,7 @@ def initEventLoop():
             vault()
             step2()
         step1()
-#        time.sleep(1)
+        time.sleep(1)
 #        turnLeft()
 #        time.sleep(1)
 #        turnRight()
