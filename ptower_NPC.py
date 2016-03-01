@@ -19,6 +19,8 @@ cRoom           = 0
 magicArrows     = 0
 arrows          = 0
 weight          = 0
+vWall		= [0]
+hWall		= [0]
 
 
 def connectServer(id, count):
@@ -87,12 +89,35 @@ def getArrows(line):
         tempdA1 = re.search(r"([0-9]+)", tempdA)
         arrows = tempdA1.group(1)
         print "search found ....", arrows
-        
+
+def getVWalls(line):
+    global vWall
+
+    m = re.findall("(vwall .*)", line)
+    if m:
+	print "search.....", m
+	print "splitting"
+	vWall = [i.split()[1:5] for i in m]
+	print "search found ....", vWall
+
+def getHWalls(line):
+    global hWall
+
+    m = re.findall("(hwall .*)", line)
+    if m:
+	print "search.....", m
+	print "splitting"
+	hWall = [i.split()[1:5] for i in m]
+	print "search found ....", hWall
+
+
 def processLine(line):
     getWounds(line)
     getRoom(line)
     getMArrows(line)
-    getArrows(line)    
+    getArrows(line)
+    getVWalls(line)
+    getHWalls(line)
     
 def step1():
     global sckt
