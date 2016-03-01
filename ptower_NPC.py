@@ -21,6 +21,10 @@ arrows          = 0
 weight          = 0
 vWall		= [0]
 hWall		= [0]
+vDoor		= [0]
+hDoor		= [0]
+players		= [0]
+playerDir	= [0]
 
 
 def connectServer(id, count):
@@ -49,11 +53,11 @@ def getWounds(line):
     #
     m = re.search("(dW .*)", line)
     if m:
-        print "search.....", m.group(1)
+        #print "search.....", m.group(1)
         tempdW = m.group(1)
         tempdW1 = re.search(r"([0-9]+)", tempdW)
         wounds = tempdW1.group(1)
-        print "search found ....", wounds
+        print " Wounds search found ....", wounds
 
 def getRoom(line):
     global cRoom
@@ -62,54 +66,82 @@ def getRoom(line):
     #
     m = re.search("(dR .*)", line)
     if m:
-        print "search.....", m.group(1)
+        #print "search.....", m.group(1)
         tempdR = m.group(1)
         tempdR1 = re.search(r"([0-9]+)", tempdR)
         cRoom = tempdR1.group(1)
-        print "search found ....", cRoom
+        print "Room search found ....", cRoom
 
 def getMArrows(line):
     global magicArrows
 
     m = re.search("(dM .*)", line)
     if m:
-        print "search.....", m.group(1)
+        #print "search.....", m.group(1)
         tempdM = m.group(1)
         tempdM1 = re.search(r"([0-9]+)", tempdM)
         magicArrows = tempdM1.group(1)
-        print "search found ....", magicArrows
+        print "Magic Arrows search found ....", magicArrows
 
 def getArrows(line):
     global arrows
 
     m = re.search("(dA .*)", line)
     if m:
-        print "search.....", m.group(1)
+        #print "search.....", m.group(1)
         tempdA = m.group(1)
         tempdA1 = re.search(r"([0-9]+)", tempdA)
         arrows = tempdA1.group(1)
-        print "search found ....", arrows
+        print "Arrows search found ....", arrows
 
 def getVWalls(line):
     global vWall
 
     m = re.findall("(vwall .*)", line)
     if m:
-	print "search.....", m
+	#print "search.....", m
 	print "splitting"
 	vWall = [i.split()[1:5] for i in m]
-	print "search found ....", vWall
+	print "Vertical Walls search found ....", vWall
 
 def getHWalls(line):
     global hWall
 
     m = re.findall("(hwall .*)", line)
     if m:
-	print "search.....", m
+	#print "search.....", m
 	print "splitting"
 	hWall = [i.split()[1:5] for i in m]
-	print "search found ....", hWall
+	print "Horizontal Walls search found ....", hWall
 
+def getVDoor(line):
+    global vDoor
+
+    m = re.findall("(vdoor .*)", line)
+    if m:
+	#print "search.....", m
+	print "splitting"
+	vDoor = [i.split()[1:5] for i in m]
+	print "Vertical Doors search found ....", vDoor
+
+def getHDoor(line):
+    global hDoor
+
+    m = re.findall("(hdoor .*)", line)
+    if m:
+	#print "search.....", m
+	print "splitting"
+	hDoor = [i.split()[1:5] for i in m]
+	print "Horizontal Door search found ....", hDoor
+
+def getPlayers(line):
+    global players
+
+    m = re.findall("(man .*)", line)
+    if m:
+	print "splitting"
+	players = [i.split()[1:5] for i in m]
+	print "Players found at ....", players
 
 def processLine(line):
     getWounds(line)
@@ -118,6 +150,9 @@ def processLine(line):
     getArrows(line)
     getVWalls(line)
     getHWalls(line)
+    getVDoor(line)
+    getHDoor(line)
+    getPlayers(line)
     
 def step1():
     global sckt
