@@ -15,20 +15,20 @@ serverName      = "localhost"
 portNumber      = 7000
 programName     = "ptower_NPC"
 connectAttempts = 10
-wounds          = 10
-fatigue         = 100
-cRoom           = 0
-magicArrows     = 0
-arrows          = 0
-weight          = 0
-vWall		= [0]
-hWall		= [0]
-vDoor		= [0]
-hDoor		= [0]
-treasures	= [0]
-playerLoc	= [0]
+wounds          = 0	#Stores the players wounds
+fatigue         = 0	#Stores the players fatigue
+cRoom           = 0	#Stores the room the player is in
+magicArrows     = 0	#Stores the players magic arrows
+arrows          = 0	#Stores the players arrows
+weight          = 0	#Stores the players total weight
+vWall		= [0]	#Stores the locations of the vertical walls
+hWall		= [0]	#Stores the locations of the horizontal walls
+vDoor		= [0]	#Stores the locations of the vertical doors
+hDoor		= [0]	#Stores the locations of the horizontal doors
+treasures	= [0]	#Stores the locations of the treasures
+playerLoc	= [0]	#Stores the location of the player
 playerDir	= 0	#1 = north, 2 = east, 3 = south, 4 = west
-enemies		= [0]
+enemies		= [0]	#Stores the locations of the enemies
 
 
 def connectServer(id, count):
@@ -78,7 +78,9 @@ def getRoom(line):
 
 def getMArrows(line):
     global magicArrows
-
+    #
+    #Searches the input line for the number of magic arrows and sets magicArrows.
+    #
     m = re.search("(dM .*)", line)
     if m:
         #print "search.....", m.group(1)
@@ -89,7 +91,9 @@ def getMArrows(line):
 
 def getArrows(line):
     global arrows
-
+    #
+    #Searches the input line for the number of arrows and sets arrows.
+    #
     m = re.search("(dA .*)", line)
     if m:
         #print "search.....", m.group(1)
@@ -100,7 +104,9 @@ def getArrows(line):
 
 def getVWalls(line):
     global vWall
-
+    #
+    #Searches the input line for the coordinates of the vWalls and adds them to the vWall list.
+    #
     m = re.findall("(vwall .*)", line)
     if m:
 	#print "search.....", m
@@ -110,7 +116,9 @@ def getVWalls(line):
 
 def getHWalls(line):
     global hWall
-
+    #
+    #Searches the input line for the coordinates of the hWalls and adds them to the hWall list.
+    #
     m = re.findall("(hwall .*)", line)
     if m:
 	#print "search.....", m
@@ -120,7 +128,9 @@ def getHWalls(line):
 
 def getVDoor(line):
     global vDoor
-
+    #
+    #Searches the input line for the coordinates of the vDoors and adds them to the vDoors list.
+    #
     m = re.findall("(vdoor .*)", line)
     if m:
 	#print "search.....", m
@@ -130,7 +140,9 @@ def getVDoor(line):
 
 def getHDoor(line):
     global hDoor
-
+    #
+    #Searches the input line for the coordinates of the hDoors and adds them to the hDoors list.
+    #
     m = re.findall("(hdoor .*)", line)
     if m:
 	#print "search.....", m
@@ -140,7 +152,9 @@ def getHDoor(line):
 
 def getTreasure(line):
     global treasures
-
+    #
+    #Searches the input line for the coordinates of the treasures and adds them to the treasures list.
+    #
     m = re.findall("(treasure .*)", line)
     if m:
 	print "splitting"
@@ -150,7 +164,9 @@ def getTreasure(line):
 def getPlayer(line):
     global playerLoc
     global playerDir
-
+    #
+    #Searches the input line for the coordinates of the player and sets the playerLoc list. Then searches for the players facing direction and sets playerDir.
+    #
     m = re.findall("([swen]man .*)", line)
     if m:
 	print "splitting"
@@ -175,8 +191,10 @@ def getPlayer(line):
 
 def getEnemies(line):
     global enemies
-#    global enemiesDir
-
+#    global enemiesDir	#For future use to store the enemies direction.
+    #
+    #Searches the input line for the coordinates of the enemies and adds them to the enemies list.
+    #
     m = re.findall("([SWEN]man .*)", line)
     if m:
 	print "splitting"
@@ -185,6 +203,10 @@ def getEnemies(line):
 
 def compareLocations(target):
     global playerLoc
+    #
+    #Compares the location of the player and that of a target by taking the x and y coords and subtracts them.
+    #
+
     print "Comparing locations"
     tempPlayerLoc = list(chain(*playerLoc))
     tempTarget = list(chain(*target))
