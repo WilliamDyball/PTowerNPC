@@ -1,6 +1,8 @@
 import os, pygame, string, thread, sys, getopt, time, re
 from pygame.locals import *
 from socket import *
+from itertools import chain
+from operator import sub
 
 #
 #   Globals
@@ -23,8 +25,10 @@ vWall		= [0]
 hWall		= [0]
 vDoor		= [0]
 hDoor		= [0]
-players		= [0]
-playerDir	= [0]
+treasures	= [0]
+playerLoc	= [0]
+playerDir	= 0	#1 = north, 2 = east, 3 = south, 4 = west
+enemies		= [0]
 
 
 def connectServer(id, count):
@@ -101,7 +105,7 @@ def getVWalls(line):
     if m:
 	#print "search.....", m
 	print "splitting"
-	vWall = [i.split()[1:5] for i in m]
+	vWall = [i.split()[1:5] for i in m] #lambda loop 
 	print "Vertical Walls search found ....", vWall
 
 def getHWalls(line):
@@ -134,14 +138,70 @@ def getHDoor(line):
 	hDoor = [i.split()[1:5] for i in m]
 	print "Horizontal Door search found ....", hDoor
 
-def getPlayers(line):
-    global players
+def getTreasure(line):
+    global treasures
 
-    m = re.findall("(man .*)", line)
+    m = re.findall("(treasure .*)", line)
     if m:
 	print "splitting"
-	players = [i.split()[1:5] for i in m]
-	print "Players found at ....", players
+	treasures = [i.split()[1:3] for i in m]
+	print "Treasure search found ....", treasures
+
+def getPlayer(line):
+    global playerLoc
+    global playerDir
+
+    m = re.findall("([swen]man .*)", line)
+    if m:
+	print "splitting"
+	playerLoc = [i.split()[1:5] for i in m]
+	print "Player found at ....", playerLoc
+	print "Getting direction..."
+        n = [i.split()[0] for i in m]
+	if n[0] == "nman":
+	    playerDir = 1
+	    print "North", playerDir
+	elif n[0] == "eman":
+	    playerDir = 2
+	    print "East", playerDir
+	elif n[0] == "sman":
+	    playerDir = 3
+	    print "South", playerDir
+	elif n[0] == "wman":
+	    playerDir = 4
+	    print "West", playerDir
+	else:
+	    print "Failed to get direction"
+
+def getEnemies(line):
+    global enemies
+#    global enemiesDir
+
+    m = re.findall("([SWEN]man .*)", line)
+    if m:
+	print "splitting"
+	enemies = [i.split()[1:5] for i in m]
+	print "Enemy found at ....", enemies
+
+def compareLocations(target):
+    global playerLoc
+    print "Comparing locations"
+    tempPlayerLoc = list(chain(*playerLoc))
+    tempTarget = list(chain(*target))
+    print tempPlayerLoc
+    
+    playerLocX = int(tempPlayerLoc[0])
+    playerLocY = int(tempPlayerLoc[1])
+    targetX = int(tempTarget[0])
+    targetY = int(tempTarget[1])
+    
+    print targetX, targetY
+    moveX = playerLocX - targetX
+    moveY = playerLocY - targetY
+
+    print "player x - target x....", moveX, moveY
+
+    
 
 def processLine(line):
     getWounds(line)
@@ -152,7 +212,9 @@ def processLine(line):
     getHWalls(line)
     getVDoor(line)
     getHDoor(line)
-    getPlayers(line)
+    getTreasure(line)
+    getPlayer(line)
+    getEnemies(line)
     
 def step1():
     global sckt
@@ -163,6 +225,26 @@ def step2():
     global sckt
     sckt.send('2')
     print 'Stepping forward 2'
+
+def step3():
+    global sckt
+    sckt.send('3')
+    print 'Stepping forward 3'
+
+def step4():
+    global sckt
+    sckt.send('4')
+    print 'Stepping forward 4'
+
+def step5():
+    global sckt
+    sckt.send('5')
+    print 'Stepping forward 5'
+
+def step6():
+    global sckt
+    sckt.send('6')
+    print 'Stepping forward 6'
     
 def turnLeft():
     global sckt
@@ -219,7 +301,7 @@ def examineDoor():
     sckt.send('e')
     print 'Examining door'
 
-def getTreasure():
+def pickUpTreasure():
     global sckt
     sckt.send('g')
     print 'Getting treasure'
@@ -260,12 +342,17 @@ def initEventLoop():
         processLine(line)
         time.sleep(0.1)
         print "Wounds: ", wounds
-        if int(wounds) <= 75:  #Sets wounds to be an int to be evaluated
-            print "low health"
-            vault()
+        if int(playerDir) == 1:  
+            print "I am facing North"
+	    turnLeft()
             step2()
-        step1()
-        time.sleep(1)
+	else:
+	    turnRight()
+	if treasures:
+	    compareLocations(treasures)
+	time.sleep(5)
+#        step1()
+#        time.sleep(1)
 #        turnLeft()
 #        time.sleep(1)
 #        turnRight()
