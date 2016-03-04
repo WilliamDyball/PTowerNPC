@@ -21,15 +21,20 @@ cRoom           = 0	#Stores the room the player is in
 magicArrows     = 0	#Stores the players magic arrows
 arrows          = 0	#Stores the players arrows
 weight          = 0	#Stores the players total weight
-vWall		= [0]	#Stores the locations of the vertical walls
-hWall		= [0]	#Stores the locations of the horizontal walls
-vDoor		= [0]	#Stores the locations of the vertical doors
-hDoor		= [0]	#Stores the locations of the horizontal doors
-treasures	= [0]	#Stores the locations of the treasures
-playerLoc	= [0]	#Stores the location of the player
+vWall		= []	#Stores the locations of the vertical walls
+hWall		= []	#Stores the locations of the horizontal walls
+vDoor		= []	#Stores the locations of the vertical doors
+hDoor		= []	#Stores the locations of the horizontal doors
+treasures	= []	#Stores the locations of the treasures
+playerLoc	= []	#Stores the location of the player
+prevPlayerLoc	= []	#Stores the previous location of the player
+locationChanged	= True
 playerDir	= 0	#1 = north, 2 = east, 3 = south, 4 = west
-enemies		= [0]	#Stores the locations of the enemies
+enemies		= []	#Stores the locations of the enemies
 
+def enum(*sequential, **named):	#Custom enum because enums were introduced to python in version 3.4 and I am using 2.7.9
+    enums = dict(zip(sequential, range(len(sequential))), **named)
+    return type('Enum', (), enums)
 
 def connectServer(id, count):
     print "connectServer called"
@@ -61,7 +66,7 @@ def getWounds(line):
         tempdW = m.group(1)
         tempdW1 = re.search(r"([0-9]+)", tempdW)
         wounds = tempdW1.group(1)
-        print " Wounds search found ....", wounds
+        #print " Wounds search found ....", wounds
 
 def getRoom(line):
     global cRoom
@@ -74,7 +79,7 @@ def getRoom(line):
         tempdR = m.group(1)
         tempdR1 = re.search(r"([0-9]+)", tempdR)
         cRoom = tempdR1.group(1)
-        print "Room search found ....", cRoom
+        #print "Room search found ....", cRoom
 
 def getMArrows(line):
     global magicArrows
@@ -87,7 +92,7 @@ def getMArrows(line):
         tempdM = m.group(1)
         tempdM1 = re.search(r"([0-9]+)", tempdM)
         magicArrows = tempdM1.group(1)
-        print "Magic Arrows search found ....", magicArrows
+        #print "Magic Arrows search found ....", magicArrows
 
 def getArrows(line):
     global arrows
@@ -100,7 +105,7 @@ def getArrows(line):
         tempdA = m.group(1)
         tempdA1 = re.search(r"([0-9]+)", tempdA)
         arrows = tempdA1.group(1)
-        print "Arrows search found ....", arrows
+        #print "Arrows search found ....", arrows
 
 def getVWalls(line):
     global vWall
@@ -110,7 +115,7 @@ def getVWalls(line):
     m = re.findall("(vwall .*)", line)
     if m:
 	#print "search.....", m
-	print "splitting"
+	#print "splitting"
 	vWall = [i.split()[1:5] for i in m] #lambda loop 
 	print "Vertical Walls search found ....", vWall
 
@@ -122,7 +127,7 @@ def getHWalls(line):
     m = re.findall("(hwall .*)", line)
     if m:
 	#print "search.....", m
-	print "splitting"
+	#print "splitting"
 	hWall = [i.split()[1:5] for i in m]
 	print "Horizontal Walls search found ....", hWall
 
@@ -134,7 +139,7 @@ def getVDoor(line):
     m = re.findall("(vdoor .*)", line)
     if m:
 	#print "search.....", m
-	print "splitting"
+	#print "splitting"
 	vDoor = [i.split()[1:5] for i in m]
 	print "Vertical Doors search found ....", vDoor
 
@@ -146,7 +151,7 @@ def getHDoor(line):
     m = re.findall("(hdoor .*)", line)
     if m:
 	#print "search.....", m
-	print "splitting"
+	#print "splitting"
 	hDoor = [i.split()[1:5] for i in m]
 	print "Horizontal Door search found ....", hDoor
 
@@ -157,22 +162,27 @@ def getTreasure(line):
     #
     m = re.findall("(treasure .*)", line)
     if m:
-	print "splitting"
+	#print "splitting"
 	treasures = [i.split()[1:3] for i in m]
 	print "Treasure search found ....", treasures
 
 def getPlayer(line):
     global playerLoc
     global playerDir
+    global prevPlayerLoc
     #
     #Searches the input line for the coordinates of the player and sets the playerLoc list. Then searches for the players facing direction and sets playerDir.
     #
     m = re.findall("([swen]man .*)", line)
     if m:
-	print "splitting"
-	playerLoc = [i.split()[1:5] for i in m]
-	print "Player found at ....", playerLoc
-	print "Getting direction..."
+	#print "splitting"
+	if playerLoc:
+	     prevPlayerLoc = playerLoc[0]
+	playerLoc[:] = []
+	playerDir = 0
+	playerLoc = [i.split()[1:3] for i in m]
+	print "Player found at ....", playerLoc[0]
+	#print "Getting direction..."
         n = [i.split()[0] for i in m]
 	if n[0] == "nman":
 	    playerDir = 1
@@ -186,8 +196,14 @@ def getPlayer(line):
 	elif n[0] == "wman":
 	    playerDir = 4
 	    print "West", playerDir
-	else:
-	    print "Failed to get direction"
+	#else:
+	#    print "Failed to get direction"
+	print "prevPlayerLoc ", prevPlayerLoc
+	
+	#if playerLoc[0] == prevPlayerLoc:
+	#    print "Player did not move"
+	#else:
+	#    print "Player has moved"
 
 def getEnemies(line):
     global enemies
@@ -197,12 +213,14 @@ def getEnemies(line):
     #
     m = re.findall("([SWEN]man .*)", line)
     if m:
-	print "splitting"
-	enemies = [i.split()[1:5] for i in m]
+	#print "splitting"
+	#print "Before split... ", enemies
+	enemies = [i.split()[1:3] for i in m]
 	print "Enemy found at ....", enemies
 
 def compareLocations(target):
     global playerLoc
+    global prevPlayerLoc
     #
     #Compares the location of the player and that of a target by taking the x and y coords and subtracts them.
     #
@@ -210,20 +228,104 @@ def compareLocations(target):
     print "Comparing locations"
     tempPlayerLoc = list(chain(*playerLoc))
     tempTarget = list(chain(*target))
-    print tempPlayerLoc
+    print "tempPlayerLoc = ", tempPlayerLoc
+    print "tempTarget = ", tempTarget
+    print "playerLoc = ", playerLoc
+
+
     
     playerLocX = int(tempPlayerLoc[0])
     playerLocY = int(tempPlayerLoc[1])
     targetX = int(tempTarget[0])
     targetY = int(tempTarget[1])
+
+    tempPlayerLoc[:] = []
+    tempTarget[:] = []
     
-    print targetX, targetY
     moveX = playerLocX - targetX
     moveY = playerLocY - targetY
 
-    print "player x - target x....", moveX, moveY
+    print "playerLoc....", playerLocX, playerLocY
+    print "target....", targetX, targetY
 
-    
+    print "player - target....", moveX, moveY
+
+    if moveX > 0:
+	#print "Face west"
+	changeDir(4)
+	time.sleep(0.5)		#Added in time.sleep to stop an issue with the server not handling rapid commands
+	if abs(moveX) != 1:
+	    if abs(moveX) > 9:
+		step(9)
+	    else:
+		step(abs(moveX))
+    elif moveX < 0:
+	#print "Face east"
+	changeDir(2)
+	time.sleep(0.5)
+	if abs(moveX) != 1:
+	    if abs(moveX) > 9:
+		step(9)
+	    else:
+		step(abs(moveX))
+    time.sleep(1)
+    if moveY > 0:
+	#print "Face north"
+	changeDir(1)
+	time.sleep(0.5)
+	if abs(moveY) != 1:
+	    if abs(moveY) > 9:
+		step(9)
+	    else:
+		step(abs(moveY))
+    elif moveY < 0:
+	#print "Face south"
+	changeDir(3)
+	time.sleep(0.5)
+	if abs(moveY) != 1:
+	    if abs(moveY) > 9:
+		step(9)
+	    else:
+		step(abs(moveY))
+
+def changeDir(target):
+    global playerDir
+    #
+    #Changes the facing direction based on that of the target direction 1 to 4
+    #
+    print "Player direction ", playerDir
+    print "Target direction ", target
+    absChange = abs(target - playerDir)
+    change = (target - playerDir)
+    print "Change....", change
+    if absChange == 2:
+	#print "U-turn"
+	vault()
+	playerDir = target
+
+    elif playerDir == 4 and target == 1:
+	turnRight()
+	playerDir = target
+    elif playerDir == 1 and target == 4:
+	turnLeft()
+	playerDir = target
+    elif change > 0:
+	if absChange == 3:
+	    turnLeft()
+	    playerDir = target
+	else:
+	    turnRight()
+	    playerDir = target
+    elif change < 0:
+	if absChange == 3:
+	    turnRight()
+	    playerDir = target
+	else:
+	    turnLeft()
+	    playerDir = target
+    else:
+	print "Direction not changed!"
+    time.sleep(0.5)
 
 def processLine(line):
     getWounds(line)
@@ -237,7 +339,13 @@ def processLine(line):
     getTreasure(line)
     getPlayer(line)
     getEnemies(line)
-    
+
+def step(steps):
+    global sckt
+    strSteps = str(steps)
+    sckt.send(strSteps)
+    print 'Stepping forward ', strSteps
+
 def step1():
     global sckt
     sckt.send('1')
@@ -348,38 +456,43 @@ def stripclrf(s):
     
 def initEventLoop():
     print "initEventLoop called"
-    global sckt, wounds
+    global sckt
 
     #thread.start_new(connectServer, (1,connectAttempts))
 
+    targetEnum	= enum('TREASURE', 'ENEMIES', 'HDOOR', 'VDOOR')
     connectServer(1, connectAttempts)
     setUpName()
 
     f = sckt.makefile("rb")
     line = stripclrf(f.readline())
     
+    time.sleep(5)
+
     while True:
         line = sckt.recv(1024)
-        print "Processing line", line, "\n"
         processLine(line)
         time.sleep(0.1)
-        print "Wounds: ", wounds
-        if int(playerDir) == 1:  
-            print "I am facing North"
-	    turnLeft()
-            step2()
-	else:
-	    turnRight()
-	if treasures:
-	    compareLocations(treasures)
-	time.sleep(5)
-#        step1()
-#        time.sleep(1)
-#        turnLeft()
-#        time.sleep(1)
-#        turnRight()
-#        time.sleep(1)
-#        attack()
+	if locationChanged:	    
+	    if treasures:
+		compareLocations(treasures)
+	    	print "Treasures...", treasures
+		treasures[:] = []
+	    elif enemies:
+		compareLocations(enemies)
+		print "Enemies...", enemies
+		enemies[:] = []
+	    elif vDoor:
+		compareLocations(hDoor)
+		print "hDoors...", hDoor
+		hDoor[:] = []
+	    elif vDoor:
+		compareLocation(vDoor)
+		print "vDoors...", vDoor
+		vDoor[:] = []
+	    else:
+	    	print "Nothing found."
+	time.sleep(1)
 
 def initNPC():
     print "initNPC called"
