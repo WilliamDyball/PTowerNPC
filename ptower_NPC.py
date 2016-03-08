@@ -176,12 +176,15 @@ def getPlayer(line):
     m = re.findall("([swen]man .*)", line)
     if m:
 	#print "splitting"
+	#print m
 	if playerLoc:
 	     prevPlayerLoc = playerLoc[0]
 	playerLoc[:] = []
 	playerDir = 0
-	playerLoc = [i.split()[1:3] for i in m]
-	print "Player found at ....", playerLoc[0]
+	playerLocTemp = [i.split()[1:3] for i in m]
+	playerLoc = playerLocTemp[-1]
+	#playerLoc[1] = playerLocTemp[-1]
+	print "Player found at ....", playerLoc
 	#print "Getting direction..."
         n = [i.split()[0] for i in m]
 	if n[0] == "nman":
@@ -226,18 +229,20 @@ def compareLocations(target):
     #
 
     print "Comparing locations"
-    tempPlayerLoc = list(chain(*playerLoc))
+    tempPlayerLoc = []
+    #tempPlayerLoc[0] = playerLoc[-2]
+    #tempPlayerLoc[1] = playerLoc[-1]
     tempTarget = list(chain(*target))
     print "tempPlayerLoc = ", tempPlayerLoc
     print "tempTarget = ", tempTarget
     print "playerLoc = ", playerLoc
 
-
+    #Get last two elements of the playerLoc and target
     
-    playerLocX = int(tempPlayerLoc[0])
-    playerLocY = int(tempPlayerLoc[1])
-    targetX = int(tempTarget[0])
-    targetY = int(tempTarget[1])
+    playerLocX = int(playerLoc[-2])
+    playerLocY = int(playerLoc[-1])
+    targetX = int(tempTarget[-2])
+    targetY = int(tempTarget[-1])
 
     tempPlayerLoc[:] = []
     tempTarget[:] = []
@@ -249,11 +254,11 @@ def compareLocations(target):
     print "target....", targetX, targetY
 
     print "player - target....", moveX, moveY
-
+    print "Positive x is west,.Positive y is north."
     if moveX > 0:
 	#print "Face west"
 	changeDir(4)
-	time.sleep(0.5)		#Added in time.sleep to stop an issue with the server not handling rapid commands
+	time.sleep(0.1)		#Added in time.sleep to stop an issue with the server not handling rapid commands
 	if abs(moveX) != 1:
 	    if abs(moveX) > 9:
 		step(9)
@@ -262,17 +267,17 @@ def compareLocations(target):
     elif moveX < 0:
 	#print "Face east"
 	changeDir(2)
-	time.sleep(0.5)
+	time.sleep(0.1)
 	if abs(moveX) != 1:
 	    if abs(moveX) > 9:
 		step(9)
 	    else:
 		step(abs(moveX))
-    time.sleep(1)
+    time.sleep(0.1)
     if moveY > 0:
 	#print "Face north"
 	changeDir(1)
-	time.sleep(0.5)
+	time.sleep(0.1)
 	if abs(moveY) != 1:
 	    if abs(moveY) > 9:
 		step(9)
@@ -281,7 +286,7 @@ def compareLocations(target):
     elif moveY < 0:
 	#print "Face south"
 	changeDir(3)
-	time.sleep(0.5)
+	time.sleep(0.1)
 	if abs(moveY) != 1:
 	    if abs(moveY) > 9:
 		step(9)
@@ -325,7 +330,7 @@ def changeDir(target):
 	    playerDir = target
     else:
 	print "Direction not changed!"
-    time.sleep(0.5)
+    time.sleep(0.1)
 
 def processLine(line):
     getWounds(line)
@@ -467,7 +472,7 @@ def initEventLoop():
     f = sckt.makefile("rb")
     line = stripclrf(f.readline())
     
-    time.sleep(5)
+    time.sleep(1)
 
     while True:
         line = sckt.recv(1024)
@@ -492,7 +497,7 @@ def initEventLoop():
 		vDoor[:] = []
 	    else:
 	    	print "Nothing found."
-	time.sleep(1)
+	time.sleep(0.1)
 
 def initNPC():
     print "initNPC called"
