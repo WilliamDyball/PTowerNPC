@@ -183,10 +183,8 @@ def getPlayer(line):
     if m:
 	#print "splitting"
 	#print m
-	if playerLoc:
-	     prevPlayerLoc = playerLoc[0]
+	prevPlayerLoc = playerLoc
 	playerLoc[:] = []
-	playerDir = 0
 	playerLocTemp = [i.split()[1:3] for i in m]
 	playerLoc = playerLocTemp[-1]
 	#playerLoc[1] = playerLocTemp[-1]
@@ -237,11 +235,11 @@ def compareLocations(target):
     #
 
     print "Comparing locations"
-    tempPlayerLoc = []
+    #tempPlayerLoc = []
     #tempPlayerLoc[0] = playerLoc[-2]
     #tempPlayerLoc[1] = playerLoc[-1]
     tempTarget = list(chain(*target))
-    print "tempPlayerLoc = ", tempPlayerLoc
+    #print "tempPlayerLoc = ", tempPlayerLoc
     print "tempTarget = ", tempTarget
     print "playerLoc = ", playerLoc
 
@@ -256,7 +254,7 @@ def compareLocations(target):
     	targetX = int(tempTarget[-2])
     	targetY = int(tempTarget[-1])
 
-    	tempPlayerLoc[:] = []
+    	#tempPlayerLoc[:] = []
     	tempTarget[:] = []
     
     	moveX = playerLocX - targetX
@@ -495,20 +493,27 @@ def initEventLoop():
 		compareLocations(treasures)
 	    	print "Treasures...", treasures
 		treasures[:] = []
+		pickUpTreasure()
 	    elif enemies:
 		compareLocations(enemies)
 		print "Enemies...", enemies
 		enemies[:] = []
-	    elif vDoor:
+		attack()
+	    elif hDoor:
 		compareLocations(hDoor)
 		print "hDoors...", hDoor
 		hDoor[:] = []
+		openDoor()
 	    elif vDoor:
-		compareLocation(vDoor)
+		compareLocations(vDoor)
 		print "vDoors...", vDoor
 		vDoor[:] = []
+		openDoor()
 	    else:
 	    	print "Nothing found."
+		time.sleep(2)
+		turnLeft()
+		step(1)
 	time.sleep(0.1)
 
 def initNPC():
