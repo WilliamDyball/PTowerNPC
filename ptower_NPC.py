@@ -245,61 +245,65 @@ def compareLocations(target):
     print "tempTarget = ", tempTarget
     print "playerLoc = ", playerLoc
 
-    #Get last two elements of the playerLoc and target
+    playerLocLength = len(playerLoc)
+    targetLength = len(tempTarget)
+    print "Lengths of playerloc and target....", playerLocLength, targetLength
+
+    if playerLocLength == 2 and targetLength == 2:
     
-    playerLocX = int(playerLoc[-2])
-    playerLocY = int(playerLoc[-1])
-    targetX = int(tempTarget[-2])
-    targetY = int(tempTarget[-1])
+	playerLocX = int(playerLoc[-2])
+    	playerLocY = int(playerLoc[-1])
+    	targetX = int(tempTarget[-2])
+    	targetY = int(tempTarget[-1])
 
-    tempPlayerLoc[:] = []
-    tempTarget[:] = []
+    	tempPlayerLoc[:] = []
+    	tempTarget[:] = []
     
-    moveX = playerLocX - targetX
-    moveY = playerLocY - targetY
+    	moveX = playerLocX - targetX
+    	moveY = playerLocY - targetY
 
-    print "playerLoc....", playerLocX, playerLocY
-    print "target....", targetX, targetY
+    	print "playerLoc....", playerLocX, playerLocY
+    	print "target....", targetX, targetY
 
-    print "player - target....", moveX, moveY
-    print "Positive x is west.Positive y is north."
-    if moveX > 0:
-	#print "Face west"
-	changeDir(4)
-	time.sleep(0.1)		#Added in time.sleep to stop an issue with the server not handling rapid commands
-	if abs(moveX) != 1:
-	    if abs(moveX) > 9:
-		step(9)
-	    else:
-		step(abs(moveX))
-    elif moveX < 0:
-	#print "Face east"
-	changeDir(2)
-	time.sleep(0.1)
-	if abs(moveX) != 1:
-	    if abs(moveX) > 9:
-		step(9)
-	    else:
-		step(abs(moveX))
-    time.sleep(0.1)
-    if moveY > 0:
-	#print "Face north"
-	changeDir(1)
-	time.sleep(0.1)
-	if abs(moveY) != 1:
-	    if abs(moveY) > 9:
-		step(9)
-	    else:
-		step(abs(moveY))
-    elif moveY < 0:
-	#print "Face south"
-	changeDir(3)
-	time.sleep(0.1)
-	if abs(moveY) != 1:
-	    if abs(moveY) > 9:
-		step(9)
-	    else:
-		step(abs(moveY))
+    	print "player - target....", moveX, moveY
+    	print "Positive x is west.Positive y is north."
+    	if moveX > 0:
+	    #print "Face west"
+	    changeDir(4)
+	    time.sleep(0.1)		#Added in time.sleep to stop an issue with the server not handling rapid commands
+	    if abs(moveX) != 1:
+	        if abs(moveX) > 9:
+		    step(9)
+	        else:
+		    step(abs(moveX))
+        elif moveX < 0:
+	    #print "Face east"
+	    changeDir(2)
+	    time.sleep(0.1)
+	    if abs(moveX) != 1:
+	        if abs(moveX) > 9:
+		    step(9)
+	        else:
+		    step(abs(moveX))
+        time.sleep(0.1)
+        if moveY > 0:
+	    #print "Face north"
+	    changeDir(1)
+	    time.sleep(0.1)
+	    if abs(moveY) != 1:
+	        if abs(moveY) > 9:
+		    step(9)
+	        else:
+		    step(abs(moveY))
+        elif moveY < 0:
+	    #print "Face south"
+	    changeDir(3)
+	    time.sleep(0.1)
+	    if abs(moveY) != 1:
+	        if abs(moveY) > 9:
+		    step(9)
+	        else:
+		    step(abs(moveY))
 
 def changeDir(target):
     global playerDir
