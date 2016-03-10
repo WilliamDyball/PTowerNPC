@@ -249,7 +249,7 @@ def compareLocations(target):
     targetLength = len(tempTarget)
     print "Lengths of playerloc and target....", playerLocLength, targetLength
 
-    if playerLocLength == 2 and targetLength >= 2:
+    if playerLocLength >= 2 and targetLength >= 2:
     
 	playerLocX = int(playerLoc[-2])
     	playerLocY = int(playerLoc[-1])
