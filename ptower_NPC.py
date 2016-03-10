@@ -112,7 +112,8 @@ def getVWalls(line):
     #
     #Searches the input line for the coordinates of the vWalls and adds them to the vWall list.
     #
-    m = re.findall("(vwall .*)", line)
+    n = re.sub(" +", " ", line)
+    m = re.findall("(vwall .*)", n)
     if m:
 	#print "search.....", m
 	#print "splitting"
@@ -124,7 +125,8 @@ def getHWalls(line):
     #
     #Searches the input line for the coordinates of the hWalls and adds them to the hWall list.
     #
-    m = re.findall("(hwall .*)", line)
+    n = re.sub(" +", " ", line)
+    m = re.findall("(hwall .*)", n)
     if m:
 	#print "search.....", m
 	#print "splitting"
@@ -136,7 +138,8 @@ def getVDoor(line):
     #
     #Searches the input line for the coordinates of the vDoors and adds them to the vDoors list.
     #
-    m = re.findall("(vdoor .*)", line)
+    n = re.sub(" +", " ", line)
+    m = re.findall("(vdoor .*)", n)
     if m:
 	#print "search.....", m
 	#print "splitting"
@@ -148,7 +151,8 @@ def getHDoor(line):
     #
     #Searches the input line for the coordinates of the hDoors and adds them to the hDoors list.
     #
-    m = re.findall("(hdoor .*)", line)
+    n = re.sub(" +", " ", line)
+    m = re.findall("(hdoor .*)", n)
     if m:
 	#print "search.....", m
 	#print "splitting"
@@ -160,7 +164,8 @@ def getTreasure(line):
     #
     #Searches the input line for the coordinates of the treasures and adds them to the treasures list.
     #
-    m = re.findall("(treasure .*)", line)
+    n = re.sub(" +", " ", line)
+    m = re.findall("(treasure .*)", n)
     if m:
 	#print "splitting"
 	treasures = [i.split()[1:3] for i in m]
@@ -173,7 +178,8 @@ def getPlayer(line):
     #
     #Searches the input line for the coordinates of the player and sets the playerLoc list. Then searches for the players facing direction and sets playerDir.
     #
-    m = re.findall("([swen]man .*)", line)
+    o = re.sub(" +", " ", line)
+    m = re.findall("([swen]man .*)", o)
     if m:
 	#print "splitting"
 	#print m
@@ -186,17 +192,18 @@ def getPlayer(line):
 	#playerLoc[1] = playerLocTemp[-1]
 	print "Player found at ....", playerLoc
 	#print "Getting direction..."
+	#The direction messes up and isn't updated correctly
         n = [i.split()[0] for i in m]
-	if n[0] == "nman":
+	if n[-1] == "nman":
 	    playerDir = 1
 	    print "North", playerDir
-	elif n[0] == "eman":
+	elif n[-1] == "eman":
 	    playerDir = 2
 	    print "East", playerDir
-	elif n[0] == "sman":
+	elif n[-1] == "sman":
 	    playerDir = 3
 	    print "South", playerDir
-	elif n[0] == "wman":
+	elif n[-1] == "wman":
 	    playerDir = 4
 	    print "West", playerDir
 	#else:
@@ -214,7 +221,8 @@ def getEnemies(line):
     #
     #Searches the input line for the coordinates of the enemies and adds them to the enemies list.
     #
-    m = re.findall("([SWEN]man .*)", line)
+    n = re.sub(" +", " ", line)
+    m = re.findall("([SWEN]man .*)", n)
     if m:
 	#print "splitting"
 	#print "Before split... ", enemies
@@ -254,7 +262,7 @@ def compareLocations(target):
     print "target....", targetX, targetY
 
     print "player - target....", moveX, moveY
-    print "Positive x is west,.Positive y is north."
+    print "Positive x is west.Positive y is north."
     if moveX > 0:
 	#print "Face west"
 	changeDir(4)
